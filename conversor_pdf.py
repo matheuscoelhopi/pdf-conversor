@@ -1,42 +1,3 @@
-'''
-import pdfplumber
-import pandas as pd
-
-
-caminho_pdf = input("Caminho do PDF: ")
-# Abrir o PDF
-with pdfplumber.open(caminho_pdf) as pdf:
-    dados = []
-
-    for pagina in pdf.pages:
-        texto = pagina.extract_text()
-        if texto:
-            linhas = texto.split("\n")
-            for linha in linhas:
-                # Filtros simples para ignorar cabeçalhos e rodapés
-                if linha.strip() and any(char.isdigit() for char in linha[:10]):
-                    dados.append(linha)
-
-# Processar os dados extraídos
-linhas_limpa = []
-for linha in dados:
-    partes = linha.split()
-    if len(partes) >= 7:
-        matricula = partes[0]
-        nome = " ".join(partes[1:-4])
-        lotacao = partes[-4]
-        ordem = partes[-3]
-        cargo = " ".join(partes[-2:])
-        linhas_limpa.append([ordem, matricula, nome, cargo, cls1, ref, portaria])
-
-# Criar o DataFrame
-df = pd.DataFrame(linhas_limpa, columns=[ "Ordem", "Matrícula", "Nome", "Cargo", "Cls", "Ref", "Portaria"])
-
-# Salvar como Excel
-df.to_excel("convertido2.xlsx", index=False)
-"C:/Users/mathe/Downloads/consultaServidorLotacaoFiltro.jsf;jsessionid=6E45B8AACDB489A51260C87F528B9891.pdf"
-'''
-
 import pandas as pd
 import pdfplumber
 import re
@@ -51,8 +12,7 @@ def pdf_to_xlsx_structured(pdf_path, xlsx_path):
             
             # Processa cada linha do texto
             for line in text.split('\n'):
-                # Padrão regex para identificar linhas de dados
-                # Exemplo: "1 828825 PAULA RENATA MACHADO CORREA CORREGEDORIA AGENTE DA RECEITA ESTADUAL PORTARIA 50"
+
                 match = re.match(r'^(\d+)\s+(\d+)\s+(.*?)\s+(.*?)\s+(.*?)\s+(.*?)\s+(.*)$', line.strip())
                 
                 if match:
